@@ -74,14 +74,12 @@ let quadtree_of_list = fun l -> fun r ->
 
 let rec clean_node = fun cell ->
   match cell with
-  | Node(q1, q2, q3, q4) -> match q1, q2, q3, q4 with
-    | Q(_, Empty), Q(_, Empty), Q(_, Empty), Q(_, Empty) -> Empty
-    | Q(r1, c1), Q(r2, c2), Q(r3, c3), Q(r4, c4) -> 
-      Node(
-        Q(r1, clean_node c1),
-        Q(r2, clean_node c2),
-        Q(r3, clean_node c3),
-        Q(r4, clean_node c4))
+  | Node(Q(_, Empty), Q(_, Empty), Q(_, Empty), Q(_, Empty)) -> Empty
+  | Node(Q(r1, c1), Q(r2, c2), Q(r3, c3), Q(r4, c4)) -> Node(
+    Q(r1, clean_node c1),
+    Q(r2, clean_node c2),
+    Q(r3, clean_node c3),
+    Q(r4, clean_node c4))
 ;;
 
 let remove = fun q -> fun c ->
@@ -89,7 +87,7 @@ let remove = fun q -> fun c ->
   | Q(r, cell) -> let newcell = match cell with
     | Empty -> cell
     | Leaf (c1, _) -> if c1 = c then Empty else cell
-    | Node (q1, q2, q3, q4) -> clean (Node (q1, q2, q3, q4))
+    | Node (q1, q2, q3, q4) -> clean_node (Node (q1, q2, q3, q4))
                   in Q(r, newcell)
 ;;
 
