@@ -1,4 +1,4 @@
-open Part1
+#use "part1.ml"
 
 (* Q1 *)
 
