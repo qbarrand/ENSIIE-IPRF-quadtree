@@ -11,7 +11,7 @@ type 'a quadtree =
 
 (* Question 7 *) 
 
-(* TODO *)
+(* cf. Report *)
 
 
 (* Question 8 *)
@@ -108,13 +108,21 @@ let rec clean_node =
 	 Q(r4, clean_node c4))
 ;;
 
-let remove =
+let rec remove =
   fun q ->
   fun c ->
   match q with 
   | Q(r, cell) -> let newcell = match cell with
 		    | Empty -> cell
-		    | Leaf (c1, _) -> if c1 = c then Empty else cell
-		    | Node (q1, q2, q3, q4) -> clean_node (Node (q1, q2, q3, q4))
-                  in Q(r, newcell)
+		    | Leaf (c1, _) ->
+		       if (fst c1) = (fst c) &&
+			    (snd c1) = (snd c)
+		       then Empty else cell
+		    | Node (q1, q2, q3, q4) ->
+		       Node(
+			   (remove q1 c),
+			   (remove q2 c),
+			   (remove q3 c),
+			   (remove q4 c))
+		  in Q(r, (clean_node newcell))
 ;;
