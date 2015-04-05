@@ -43,7 +43,11 @@ let rec list_of_quadtree =
   | Q(_, cell) -> match cell with
 		  | Empty -> []
 		  | Leaf (c, obj) -> (c, obj)::[]
-		  | Node (q1, q2, q3, q4) -> (list_of_quadtree q1)@(list_of_quadtree q2)@(list_of_quadtree q3)@(list_of_quadtree q4)
+		  | Node (q1, q2, q3, q4) ->
+		     (list_of_quadtree q1)@
+		       (list_of_quadtree q2)@
+			 (list_of_quadtree q3)@
+			   (list_of_quadtree q4)
 ;;
 
 
@@ -94,18 +98,29 @@ let quadtree_of_list =
 
 (* Question 13 *)
 
-let rec clean_node =
-  fun cell ->
-  match cell with
-  | Empty -> cell
-  | Leaf _ -> cell
-  | Node(Q(_, Empty), Q(_, Empty), Q(_, Empty), Q(_, Empty)) -> Empty
-  | Node(Q(r1, c1), Q(r2, c2), Q(r3, c3), Q(r4, c4)) ->
-     Node(
-	 Q(r1, clean_node c1),
-	 Q(r2, clean_node c2),
-	 Q(r3, clean_node c3),
-	 Q(r4, clean_node c4))
+let rec clean_qt =
+  fun q ->
+  match q with
+  | Q(r, cell) ->
+     match cell with 
+     | Empty -> Q(r, cell)
+     | Leaf _ -> Q(r, cell)
+     | Node(Q(r1, c1), Q(r2, c2), Q(r3, c3), Q(r4, c4)) ->
+	match c1, c2, c3, c4  with
+	| Empty , Empty , Empty , Empty  -> Q(r, Empty)
+
+	(* Only 1 leaf *)
+	| Leaf _, Empty , Empty , Empty  -> Q(r, c1)
+	| Empty , Leaf _, Empty , Empty  -> Q(r, c2)
+	| Empty , Empty , Leaf _, Empty  -> Q(r, c3)
+	| Empty , Empty , Empty , Leaf _ -> Q(r, c4)
+
+        (* Other cases *)
+	| _, _, _, _ -> Q(r, Node(
+			    clean_qt (Q(r1, c1)),
+			    clean_qt (Q(r2, c2)),
+			    clean_qt (Q(r3, c3)),
+			    clean_qt (Q(r4, c4))))
 ;;
 
 let rec remove =
@@ -124,5 +139,5 @@ let rec remove =
 			   (remove q2 c),
 			   (remove q3 c),
 			   (remove q4 c))
-		  in Q(r, (clean_node newcell))
+		  in clean_qt (Q(r, newcell))
 ;;
