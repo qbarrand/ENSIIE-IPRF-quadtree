@@ -1,26 +1,103 @@
-\documentclass[11pt]{article}
+\documentclass[11pt]{scrartcl}
 
-\usepackage[latin1]{inputenc}
-\usepackage[francais]{babel}
-%Gummi|065|=)
-\title{\textbf{ENSIIE - IPRF}}
+% French
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[frenchb]{babel}
+
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!30!black}
+}
+\usepackage{hyphenat}
+
+\usepackage{enumitem}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{Quentin Barrand}
+\fancyhead[RE,LO]{IPRF - « QuadTree »}
+\fancyfoot[LE,CO]{\thepage}
+
+% Specifying the outputdir option else a bug prevents from compiling a document that contains in-doc minted code.
+\usepackage[outputdir=/tmp]{minted}
+
+\title{\textbf{IPRF - « QuadTree »}}
+\subtitle{Rapport}
+
+
 \author{Quentin Barrand\\
-		\texttt{quentin@quba.fr}}
+		\href{mailto:quentin@quba.fr}{\texttt{quentin@quba.fr}}}
+		
 \date{\today}
+
 \begin{document}
 
 \maketitle
 
-\section{Before we start}
+\begin{abstract}
+Résumé
+\end{abstract}
 
-This is section 1.
+\break
 
-\section{Quadtree}
+\section*{Organisation du projet}
 
-This is section 2.
+\section{Échauffement sur les rectangles}
 
-\section{One more thing}
+\begin{description}
+\item[Question 1.]
+\item[Question 2.]
+\item[Question 3.]
+\item[Question 4.]
+\item[Question 5.]
+\item[Question 6.]
+\end{description}
 
-This is section 3.
+\section{La structure de données QuadTree}
 
+\begin{description}
+\item[Question 7.] \hfill \\
+	\begin{description}
+	\item[Avantages.]
+	\item[Inconvénients.]
+	\end{description}
+\item[Question 8.]
+\item[Question 9.]
+\item[Question 10.]
+\item[Question 11.]
+\item[Question 12.]
+\item[Question 13.]
+\end{description}
+
+\section{Représentation graphique d'un QuadTree et tests}
+
+\begin{description}
+\item[Question 14.]
+\item[Question 15.]
+\item[Question 16.]
+\end{description}
+
+\section{Placement du disque}
+
+\begin{description}
+\item[Question 17.]
+\item[Question 18.]
+\item[Question 19.]
+\item[Question 20.]
+\end{description}
+
+\section{Déplacement du disque et détection de collision}
+
+\begin{description}
+\item[Question 21.]
+\item[Question 22.]
+\item[Question 23.]
+\end{description}
 \end{document}
