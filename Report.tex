@@ -49,31 +49,34 @@ Résumé
 
 \section*{Organisation du projet}
 
+TODO
+
 \section{Échauffement sur les rectangles}
 
 \begin{description}
-\item[Question 1.]
-\item[Question 2.]
-\item[Question 3.]
-\item[Question 4.]
-\item[Question 5.]
-\item[Question 6.]
+\item[Question 1.] Voir \texttt{part1.ml}.
+\item[Question 2.] Voir \texttt{part1.ml}.
+\item[Question 3.] Voir \texttt{part1.ml}.
+\item[Question 4.] Voir \texttt{part1.ml}.
+\item[Question 5.] Voir \texttt{part1.ml}.
+\item[Question 6.] Voir \texttt{part1.ml}.
 \end{description}
 
 \section{La structure de données QuadTree}
 
 \begin{description}
-\item[Question 7.] \hfill \\
-	\begin{description}
-	\item[Avantages.]
-	\item[Inconvénients.]
-	\end{description}
-\item[Question 8.]
-\item[Question 9.]
-\item[Question 10.]
-\item[Question 11.]
-\item[Question 12.]
-\item[Question 13.]
+\item[Question 7.] Pour stocker une collection de points, on pourrait utiliser trois grandes familles de structures de données :
+\begin{description}
+\item[Ensembles ou listes] On stocke les coordonnées des points les uns à la suite des autres dans une liste. Occupation mémoire très faible, mais algorithme de recherche peu efficace (parcours de la liste - $\mathcal{O}(n)$).
+\item[Matrices] On stocke un tableau à deux dimensions en mémoire, et aux coordonnées du point dans la matrice on stocke l'objet lié au point. La recherche d'un point est quasi-instantanée mais l'occupation mémoire est très importante.
+\item[Arbres n-aires] Les arbres permettent de combiner une utilisation mémoire faible et une recherche efficace en $\mathcal{O}(\log{}n)$. Le QuadTree, arbre 4-aire, est une structure de données dont l'emploi est justifié pour stocker des points 2D, puisqu'elle découpe si nécessaire l'espace en rectangles successifs et que tout point est logiquement contenu dans un rectangle.
+\end{description}
+\item[Question 8.] Voir \texttt{part2.ml}.
+\item[Question 9.] Voir \texttt{part2.ml}.
+\item[Question 10.] Voir \texttt{part2.ml}.
+\item[Question 11.] Voir \texttt{part2.ml}.
+\item[Question 12.] Voir \texttt{part2.ml}.
+\item[Question 13.] Voir \texttt{part2.ml}.
 \end{description}
 
 \section{Représentation graphique d'un QuadTree et tests}
