@@ -1,7 +1,5 @@
 #use "part1.ml"
 
-#use "extensions.ml"
-     
 type 'a quadtree =
   | Q of rect * 'a cell
  and 'a cell =
@@ -84,7 +82,7 @@ let rec insert =
       match cell with
       | Empty -> Q(r, Leaf (c, add_obj))
       | Leaf (c', obj) ->
-	 if c_equals c c'
+	 if coord_equals c c'
 	 then failwith "An object already exists at these coordinates"
 	 else insert (split_leaf q c' obj) c add_obj
       | Node (q1, q2, q3, q4) -> Q(r, Node(insert q1 c add_obj, insert q2 c add_obj, insert q3 c add_obj, insert q4 c add_obj))
@@ -136,7 +134,7 @@ let rec remove =
   | Q(r, cell) -> let newcell = match cell with
 		    | Empty -> cell
 		    | Leaf (c1, _) ->
-		       if c_equals c c1
+		       if coord_equals c c1
 		       then Empty else cell
 		    | Node (q1, q2, q3, q4) ->
 		       Node(

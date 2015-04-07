@@ -1,7 +1,6 @@
-type coord = float * float ;;
-type rect = R of coord * coord ;;
-  
-  
+#use "part1.coord.ml"
+#use "part1.rect.ml"
+     
 (* Question 1 *)
   
 let make_rect =
