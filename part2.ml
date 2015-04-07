@@ -1,4 +1,6 @@
 #use "part1.ml"
+
+#use "extensions.ml"
      
 type 'a quadtree =
   | Q of rect * 'a cell
@@ -61,14 +63,14 @@ let split_leaf =
   | Q(r, cell) ->
      let r1, r2, r3, r4 = rect_split r in
      let newcell =
-       if rect_mem r1 c then Node(Q(r1, Leaf(c, obj)), Q(r2, Empty), Q(r3, Empty), Q(r4, Empty)) else
-	 if rect_mem r2 c then Node(Q(r1, Empty), Q(r2, Leaf(c, obj)), Q(r3, Empty), Q(r4, Empty)) else
-	   if rect_mem r3 c then Node(Q(r1, Empty), Q(r2, Empty), Q(r3, Leaf(c, obj)), Q(r4, Empty)) else
-	     if rect_mem r4 c then Node(Q(r1, Empty), Q(r2, Empty), Q(r3, Empty), Q(r4, Leaf(c, obj))) else
-	       failwith "No sub quadtree of which point is member"
+       match rect_mem r1 c, rect_mem r2 c, rect_mem r3 c, rect_mem r4 c with
+       | true, false, false, false -> Node(Q(r1, Leaf(c, obj)), Q(r2, Empty), Q(r3, Empty), Q(r4, Empty))
+       | false, true, false, false -> Node(Q(r1, Empty), Q(r2, Leaf(c, obj)), Q(r3, Empty), Q(r4, Empty))
+       | false, false, true, false -> Node(Q(r1, Empty), Q(r2, Empty), Q(r3, Leaf(c, obj)), Q(r4, Empty))
+       | false, false, false, true -> Node(Q(r1, Empty), Q(r2, Empty), Q(r3, Empty), Q(r4, Leaf(c, obj)))
+       | _, _, _, _ -> failwith "split_leaf error"
      in Q(r, newcell)
 ;;
-  
 
 let rec insert =
   fun q ->
@@ -77,11 +79,14 @@ let rec insert =
   match q with
     Q(r, cell) ->
     if rect_mem r c = false
-    then q (*failwith "Object coordinates not within the quadtree's rectangle" *)
+    then q
     else
       match cell with
       | Empty -> Q(r, Leaf (c, add_obj))
-      | Leaf (c', obj) -> insert (split_leaf q c' obj) c add_obj
+      | Leaf (c', obj) ->
+	 if c_equals c c'
+	 then failwith "An object already exists at these coordinates"
+	 else insert (split_leaf q c' obj) c add_obj
       | Node (q1, q2, q3, q4) -> Q(r, Node(insert q1 c add_obj, insert q2 c add_obj, insert q3 c add_obj, insert q4 c add_obj))
 ;;
   
@@ -107,6 +112,7 @@ let rec clean_qt =
      | Leaf _ -> Q(r, cell)
      | Node(Q(r1, c1), Q(r2, c2), Q(r3, c3), Q(r4, c4)) ->
 	match c1, c2, c3, c4  with
+	(* All sub quadtrees empty *)
 	| Empty , Empty , Empty , Empty  -> Q(r, Empty)
 
 	(* Only 1 leaf *)
@@ -130,8 +136,7 @@ let rec remove =
   | Q(r, cell) -> let newcell = match cell with
 		    | Empty -> cell
 		    | Leaf (c1, _) ->
-		       if (fst c1) = (fst c) &&
-			    (snd c1) = (snd c)
+		       if c_equals c c1
 		       then Empty else cell
 		    | Node (q1, q2, q3, q4) ->
 		       Node(
