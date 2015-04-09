@@ -5,7 +5,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[frenchb]{babel}
 
-\usepackage{xcolor}
+%\usepackage{xcolor}
 \usepackage{url}
 \usepackage{hyperref}
 \hypersetup{
@@ -18,6 +18,8 @@
 
 \usepackage{enumitem}
 
+\usepackage[usenames,dvipsnames]{xcolor}
+
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
@@ -28,16 +30,27 @@
 % Specifying the outputdir option else a bug prevents from compiling a document that contains in-doc minted code.
 \usepackage[outputdir=/tmp]{minted}
 
+\newcommand{\functionname}[1]{\texttt{\textcolor{MidnightBlue}{#1}}}
+\newcommand{\filename}[1]{\texttt{\textcolor{RawSienna}{#1}}}
+\newcommand{\code}[1]{\mintinline{ocaml}{#1}}
+
+%% This code substitutes underscore.sty
+\begingroup\lccode`~=`_
+\lowercase{\endgroup
+  \protected\def~{\ifmmode\sb\else\textunderscore\fi}
+}
+\AtBeginDocument{\catcode`_=\active}
+%% end
+
+\begin{document}
+
 \title{\textbf{IPRF - « QuadTree »}}
 \subtitle{Rapport}
-
 
 \author{Quentin Barrand\\
 		\href{mailto:quentin@quba.fr}{\texttt{quentin@quba.fr}}}
 		
 \date{\today}
-
-\begin{document}
 
 \maketitle
 
@@ -54,12 +67,17 @@ TODO
 \section{Échauffement sur les rectangles}
 
 \begin{description}
-\item[Question 1.] Voir \texttt{part1.ml}.
-\item[Question 2.] Voir \texttt{part1.ml}.
-\item[Question 3.] Voir \texttt{part1.ml}.
-\item[Question 4.] Voir \texttt{part1.ml}.
-\item[Question 5.] Voir \texttt{part1.ml}.
-\item[Question 6.] Voir \texttt{part1.ml}.
+\item[Question 1.] Voir \filename{part1.ml}.
+
+\item[Question 2.] Voir \filename{part1.ml}.
+
+\item[Question 3.] Voir \filename{part1.ml}.
+
+\item[Question 4.] Voir \filename{part1.ml}.
+
+\item[Question 5.] Voir \filename{part1.ml}.
+
+\item[Question 6.] Voir \filename{part1.ml}.
 \end{description}
 
 \section{La structure de données QuadTree}
@@ -67,40 +85,81 @@ TODO
 \begin{description}
 \item[Question 7.] Pour stocker une collection de points, on pourrait utiliser trois grandes familles de structures de données :
 \begin{description}
-\item[Ensembles ou listes] On stocke les coordonnées des points les uns à la suite des autres dans une liste. Occupation mémoire très faible, mais algorithme de recherche peu efficace (parcours de la liste - $\mathcal{O}(n)$).
-\item[Matrices] On stocke un tableau à deux dimensions en mémoire, et aux coordonnées du point dans la matrice on stocke l'objet lié au point. La recherche d'un point est quasi-instantanée mais l'occupation mémoire est très importante.
-\item[Arbres n-aires] Les arbres permettent de combiner une utilisation mémoire faible et une recherche efficace en $\mathcal{O}(\log{}n)$. Le QuadTree, arbre 4-aire, est une structure de données dont l'emploi est justifié pour stocker des points 2D, puisqu'elle découpe si nécessaire l'espace en rectangles successifs et que tout point est logiquement contenu dans un rectangle.
+\item[Ensembles ou listes] On stocke les coordonnées des points les uns à la suite des autres dans une liste.\\
+%Occupation mémoire très faible, mais algorithme de recherche peu efficace (parcours de la liste - $\mathcal{O}(n)$).\\
+Occupation mémoire : faible ($n \times taille(n)$).\\
+Algorithmes d'accès : très peu efficaces (parcours de la liste - $\mathcal{O}(n)$).
+\item[Matrices] On stocke un tableau à deux dimensions en mémoire, et aux coordonnées du point dans la matrice on stocke l'objet lié au point.\\
+Occupation mémoire : très importante ($((Abs_{max} - Abs_{min}) \times (Ord_{max} - Ord_{min})) \times taille(n)$).\\
+Algorithmes d'accès : très efficaces (temps constant qui ne dépend pas de $n$).
+\item[Arbres n-aires] Les arbres permettent de combiner une utilisation mémoire modérée et une recherche efficace. L'emploi du QuadTree, arbre 4-aire, est particulèrement justifié pour travailler avec des points 2D, puisqu'il découpe si nécessaire l'espace en rectangles successifs et que tout point est logiquement contenu dans un rectangle.\\
+Occupation mémoire : modérée ($\leq 4 \times taille(n)$).\\
+Algorithmes d'accès : plutôt efficaces ($\mathcal{O}(\log{}n)$).
 \end{description}
-\item[Question 8.] Voir \texttt{part2.ml}.
-\item[Question 9.] Voir \texttt{part2.ml}.
-\item[Question 10.] Voir \texttt{part2.ml}.
-\item[Question 11.] Voir \texttt{part2.ml}.
-\item[Question 12.] Voir \texttt{part2.ml}.
-\item[Question 13.] Voir \texttt{part2.ml}.
+\item[Question 8.] Voir \filename{part2.ml}.
+\item[Question 9.] Voir \filename{part2.ml}.
+\item[Question 10.] Voir \filename{part2.ml}.
+\item[Question 11.] Voir \filename{part2.ml}.
+\item[Question 12.] Voir \filename{part2.ml}.
+\item[Question 13.] Voir \filename{part2.ml}.
 \end{description}
 
 \section{Représentation graphique d'un QuadTree et tests}
 
 \begin{description}
-\item[Question 14.]
-\item[Question 15.]
-\item[Question 16.]
+\item[Question 14.] Fonctions de \filename{display.ml} :
+\begin{description}
+\item[\functionname{draw_data}] Dessine une donnée stockée dans une feuille \code{Leaf of coord * 'a} d'un QuadTree. La fonction de conversion de \code{'a} vers \code{String} ainsi que la couleur de dessin doivent être passées en paramètre.
+\item[\functionname{draw_quadtree}] Dessine récursivement un QuadTree. Commence par dessiner en bleu le rectangle dans lequel est contenu le QuadTree, puis, en fonction de la nature de l'élement \code{cell} :
+\begin{itemize}
+\item ne fait rien si l'élément est \code{Empty};
+\item fait appel à \functionname{draw_data} si l'élément est \code{Leaf};
+\item s'appelle récursivement pour chaque sous-QuadTree si l'élément est \code{Node}.
+\end{itemize}
+\item[\functionname{wait_and_quit}] Attend un appui sur une touche du clavier puis ferme la fenêtre de dessin.
+\item[\functionname{init}] Initialise un environnement de dessin en fonction de la taille du rectangle passé en paramètre et ouvre la fenêtre. Retourne un triplet de \code{Float} nommé \code{dparams} dans le reste du projet et utilisé par toutes les fonctions de dessin. 
+\item[\functionname{simple_test}] Appelle la fonction \functionname{draw_quadtree} à l'aide du triple \code{dparams} (obtenu par un précédent appel à la fonction \functionname{init}) et d'une fonction de conversion vers le type \code{String} pour dessiner le QuadTree passé en paramètre.
+\end{description}
+
+\item[Question 15.] TODO
+
+\item[Question 16.] TODO
 \end{description}
 
 \section{Placement du disque}
 
 \begin{description}
-\item[Question 17.]
-\item[Question 18.]
-\item[Question 19.]
-\item[Question 20.]
+\item[Question 17.] Voir \filename{part4.ml}.
+
+\item[Question 18.] Voir \filename{part4.ml}.
+
+\item[Question 19.] Voir \filename{part4.ml}.
+
+\item[Question 20.] Fonctions de \filename{simulation1.ml} :
+\begin{description}
+\item[\functionname{get_point}] Retourne les coordonnées du point sur lequel se trouve le pointeur de la souris lors du déclenchement du clic.
+\item[\functionname{get_disk}] Retourne les coordonnées du centre et la longueur du rayon du cercle désigné par une action « clic - glisser » (début du clic - déplacement du pointeur - relâchement du pointeur).
+\item[\functionname{draw_disk}] Dessine à disque d'une couleur spécifiée à des coordonnées spécifiées, plein ou non.
+\item[\functionname{draw_disk_with_collisions}] Dessine un disque :
+\begin{itemize}
+\item de couleur jaune s'il recouvre des points du QuadTree (obtenus grâce à \functionname{collision_disk} de \filename{part4.ml}), et fait appel à \functionname{draw_data} de \filename{display.ml} pour dessiner ces points en rouge le cas échéant;
+\item de couleur verte sinon.
+\end{itemize}
+\item[\functionname{simulation_placement}] Fait appel aux fonctions \functionname{init} et \functionname{draw_quadtree} de \functionname{display.ml} et aux fonctions \functionname{get_disk} et \functionname{draw_disk_with_collisions} pour dessiner un cercle défini à la souris par l'utilisateur et ses éventuels collisions avec les points du QuadTree.
+\end{description}
 \end{description}
 
 \section{Déplacement du disque et détection de collision}
 
 \begin{description}
-\item[Question 21.]
-\item[Question 22.]
-\item[Question 23.]
+\item[Question 21.] Voir \filename{part5.ml}.
+
+\item[Question 22.] Voir \filename{part5.ml}.
+
+\item[Question 23.] Fonctions de \filename{simulation2.ml} :
+\begin{description}
+\item[\functionname{draw_trail_with_collisions}]
+\item[\functionname{simulation_move}] Idem que \functionname{simulation_placement} de \filename{simulation1.ml}, sauf qu'après avoir défini un cercle, un second clic de souris utilise la fonction \functionname{draw_trail_with_collisions} pour déplacer le cercle vers cette seconde position et afficher en rouge les points survolés pendant son déplacement.
+\end{description}
 \end{description}
 \end{document}
