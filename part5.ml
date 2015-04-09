@@ -7,18 +7,17 @@ let collision_trail_point =
   fun (q: coord) ->
   fun (r: float) ->
   fun (m: coord) ->
-  if not (collision_disk_point (p, r) m) &&
-       not (collision_disk_point (q, r) m)
-  then let d = (abs_float
-		  (fst m *. (snd q -. snd p) -.
-		     (snd m *. (fst q -. fst p)) +.
-			fst q *. snd p -.
-		     snd q *. fst p))
-	       /.
-		 (sqrt (((fst q) -. (fst p)) ** 2. +. ((snd q) -. snd p) ** 2.))
-		  in
-		  d <= r
-  else true
+  collision_disk_point (p, r) m ||
+    collision_disk_point (q, r) m ||
+      let d = (abs_float
+		 (fst m *. (snd q -. snd p) -.
+		    (snd m *. (fst q -. fst p)) +.
+		    fst q *. snd p -.
+		    snd q *. fst p))
+	      /.
+		(sqrt (((fst q) -. (fst p)) ** 2. +. ((snd q) -. snd p) ** 2.))
+      in
+      d <= r
 ;;
 
 

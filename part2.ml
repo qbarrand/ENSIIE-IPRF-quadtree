@@ -7,11 +7,6 @@ type 'a quadtree =
    | Leaf of coord * 'a
    | Node of 'a quadtree * 'a quadtree * 'a quadtree * 'a quadtree
 ;;
-  
-
-(* Question 7 *) 
-
-(* cf. Report *)
 
 
 (* Question 8 *)
@@ -27,11 +22,15 @@ let boundary =
 
 let rec cardinal =
   fun q -> 
-  match q with
-  | Q(_, c) -> match c with
+  match q with Q(_, c) ->
+	       match c with
 	       | Empty -> 0
 	       | Leaf _ -> 1
-	       | Node (q1, q2, q3, q4) -> cardinal q1 + cardinal q2 + cardinal q3 + cardinal q4
+	       | Node (nw, ne, se, sw) ->
+		  cardinal nw +
+		    cardinal ne +
+		    cardinal se +
+		    cardinal sw
 ;;
 
 
@@ -39,17 +38,17 @@ let rec cardinal =
 
 let rec list_of_quadtree =
   fun q -> 
-  match q with
-  | Q(_, cell) -> match cell with
-		  | Empty -> []
-		  | Leaf (c, obj) -> (c, obj)::[]
-		  | Node (q1, q2, q3, q4) ->
-		     (list_of_quadtree q1)@
-		       (list_of_quadtree q2)@
-			 (list_of_quadtree q3)@
-			   (list_of_quadtree q4)
+  match q with Q(_, cell) ->
+	       match cell with
+	       | Empty -> []
+	       | Leaf (c, obj) -> (c, obj)::[]
+	       | Node (nw, ne, se, sw) ->
+		  (list_of_quadtree nw)@
+		    (list_of_quadtree ne)@
+		      (list_of_quadtree se)@
+			(list_of_quadtree sw)
 ;;
-
+  
 
 (* Question 11 *)
 
@@ -57,35 +56,53 @@ let split_leaf =
   fun q ->
   fun c ->
   fun obj ->
-  match q with
-  | Q(r, cell) ->
-     let r1, r2, r3, r4 = rect_split r in
-     let newcell =
-       match rect_mem r1 c, rect_mem r2 c, rect_mem r3 c, rect_mem r4 c with
-       | true, false, false, false -> Node(Q(r1, Leaf(c, obj)), Q(r2, Empty), Q(r3, Empty), Q(r4, Empty))
-       | false, true, false, false -> Node(Q(r1, Empty), Q(r2, Leaf(c, obj)), Q(r3, Empty), Q(r4, Empty))
-       | false, false, true, false -> Node(Q(r1, Empty), Q(r2, Empty), Q(r3, Leaf(c, obj)), Q(r4, Empty))
-       | false, false, false, true -> Node(Q(r1, Empty), Q(r2, Empty), Q(r3, Empty), Q(r4, Leaf(c, obj)))
-       | _, _, _, _ -> failwith "split_leaf error"
-     in Q(r, newcell)
+  match q with Q(r, cell) ->
+    let r1, r2, r3, r4 = rect_split r in
+    let newcell =
+      match rect_mem r1 c, rect_mem r2 c, rect_mem r3 c, rect_mem r4 c with
+      | true, false, false, false -> Node(
+					 Q(r1, Leaf(c, obj)),
+					 Q(r2, Empty),
+					 Q(r3, Empty),
+					 Q(r4, Empty))
+      | false, true, false, false -> Node(
+					 Q(r1, Empty),
+					 Q(r2, Leaf(c, obj)),
+					 Q(r3, Empty),
+					 Q(r4, Empty))
+      | false, false, true, false -> Node(
+					 Q(r1, Empty),
+					 Q(r2, Empty),
+					 Q(r3, Leaf(c, obj)),
+					 Q(r4, Empty))
+      | false, false, false, true -> Node(
+					 Q(r1, Empty),
+					 Q(r2, Empty),
+					 Q(r3, Empty),
+					 Q(r4, Leaf(c, obj)))
+      | _, _, _, _ -> failwith "split_leaf error"
+    in Q(r, newcell)
 ;;
 
 let rec insert =
   fun q ->
   fun c ->
   fun add_obj ->
-  match q with
-    Q(r, cell) ->
-    if rect_mem r c = false
-    then q
-    else
-      match cell with
-      | Empty -> Q(r, Leaf (c, add_obj))
-      | Leaf (c', obj) ->
-	 if coord_equals c c'
-	 then failwith "An object already exists at these coordinates"
-	 else insert (split_leaf q c' obj) c add_obj
-      | Node (q1, q2, q3, q4) -> Q(r, Node(insert q1 c add_obj, insert q2 c add_obj, insert q3 c add_obj, insert q4 c add_obj))
+  match q with Q(r, cell) ->
+	       if not (rect_mem r c)
+	       then q
+	       else match cell with
+		    | Empty -> Q(r, Leaf (c, add_obj))
+		    | Leaf (c', obj) ->
+		       if coord_equals c c'
+		       then failwith "An object already exists at these coordinates"
+		       else insert (split_leaf q c' obj) c add_obj
+		    | Node (nw, ne, se, sw) ->
+		       Q(r, Node(
+				insert nw c add_obj,
+				insert ne c add_obj,
+				insert se c add_obj,
+				insert sw c add_obj))
 ;;
   
 
@@ -103,8 +120,7 @@ let quadtree_of_list =
 
 let rec clean_qt =
   fun q ->
-  match q with
-  | Q(r, cell) ->
+  match q with Q(r, cell) ->
      match cell with 
      | Empty -> Q(r, cell)
      | Leaf _ -> Q(r, cell)
@@ -127,20 +143,21 @@ let rec clean_qt =
 			    clean_qt (Q(r4, c4))))
 ;;
 
+
 let rec remove =
   fun q ->
   fun c ->
-  match q with 
-  | Q(r, cell) -> let newcell = match cell with
-		    | Empty -> cell
-		    | Leaf (c1, _) ->
-		       if coord_equals c c1
-		       then Empty else cell
-		    | Node (q1, q2, q3, q4) ->
-		       Node(
-			   (remove q1 c),
-			   (remove q2 c),
-			   (remove q3 c),
-			   (remove q4 c))
-		  in clean_qt (Q(r, newcell))
+  match q with Q(r, cell) ->
+    clean_qt (Q(r, match cell with
+      | Empty -> cell
+      | Leaf (c1, _) ->
+	 if coord_equals c c1
+	 then Empty else cell
+      | Node (nw, ne, se, sw) ->
+	 Node(
+	     (remove nw c),
+	     (remove ne c),
+	     (remove se c),
+	     (remove sw c))))
 ;;
+  
