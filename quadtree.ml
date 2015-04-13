@@ -1,4 +1,4 @@
-#use "part1.ml"
+#use "rect.ml"
 
 type 'a quadtree =
   | Q of rect * 'a cell

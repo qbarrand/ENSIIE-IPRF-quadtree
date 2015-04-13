@@ -1,6 +1,8 @@
-#use "part1.coord.ml"
-#use "part1.rect.ml"
-     
+#use "coord.ml"
+
+type rect = R of coord * coord ;;
+
+
 (* Question 1 *)
   
 let make_rect =
@@ -88,4 +90,3 @@ let rect_split =
   make_rect (rect_left r, rect_bottom r) p,
   make_rect p (rect_right r, rect_bottom r)
 ;;
-

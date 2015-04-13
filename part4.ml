@@ -1,4 +1,4 @@
-#use "part2.ml"
+#use "quadtree.ml"
 
 let collision_disk_point =
   fun ((c: coord), (r: float)) ->
