@@ -1,4 +1,5 @@
-#use "quadtree.ml"
+#use "part3.ml"
+#use "simulation1.ml"
 
 let collision_disk_point =
   fun ((c: coord), (r: float)) ->
@@ -52,9 +53,6 @@ let rec collision_disk =
 
 (* Question 20 *)
 
-#use "display.ml"
-#use "simulation1.ml"
-  
 let r0 = make_rect (0., 0.) (2., 2.) ;;
 
 let c0 = 0.3, 0.3 ;;
