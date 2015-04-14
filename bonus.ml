@@ -4,9 +4,7 @@
      
 (* Question 15 bonus *)
 
-let gen_random_quadtree =
-  fun r ->
-  fun n ->
+let gen_random_quadtree = fun r n ->
   let list = gen_objects_list r n 0 in
   quadtree_of_list list r
 ;;
@@ -14,9 +12,7 @@ let gen_random_quadtree =
 
 (* Question 18 bonus *)
   
-let graphical_clip =
-  fun q ->
-  fun f ->
+let graphical_clip = fun q f ->
   let r = boundary q in
   let dparams = init r in
   let sx,sy,z = dparams in

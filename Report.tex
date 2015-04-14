@@ -5,7 +5,6 @@
 \usepackage[T1]{fontenc}
 \usepackage[frenchb]{babel}
 
-%\usepackage{xcolor}
 \usepackage{url}
 \usepackage{hyperref}
 \hypersetup{
@@ -16,6 +15,7 @@
 }
 \usepackage{hyphenat}
 
+\usepackage{dirtree}
 \usepackage{enumitem}
 
 \usepackage[usenames,dvipsnames]{xcolor}
@@ -63,45 +63,63 @@ Résumé
 \section*{Organisation du projet}
 
 TODO
+Le projet est organisé comme suit :
+\dirtree{%
+ .1 /.
+ .2 coord.ml\DTcomment{Partie 1}.
+ .2 display.ml\DTcomment{Fourni par le sujet}.
+ .2 part3.ml\DTcomment{Partie 3}.
+ .2 part3.test.ml\DTcomment{Partie 3 - tests}.
+ .2 part4.ml\DTcomment{Partie 4}.
+ .2 part5.ml\DTcomment{Partie 5}.
+ .2 quadtree.ml\DTcomment{Partie 2}.
+ .2 rect.ml\DTcomment{Partie 1}.
+ .2 simulation1.ml\DTcomment{Fourni par le sujet}.
+ .2 simulation1.ml\DTcomment{Fourni par le sujet}.
+}
+
 
 \section{Échauffement sur les rectangles}
 
 \begin{description}
-\item[Question 1.] Voir \filename{part1.ml}.
+\item[Question 1.] Voir \filename{rect.ml}.
 
-\item[Question 2.] Voir \filename{part1.ml}.
+\item[Question 2.] Voir \filename{rect.ml}.
 
-\item[Question 3.] Voir \filename{part1.ml}.
+\item[Question 3.] Voir \filename{rect.ml}.
 
-\item[Question 4.] Voir \filename{part1.ml}.
+\item[Question 4.] Voir \filename{rect.ml}.
 
-\item[Question 5.] Voir \filename{part1.ml}.
+\item[Question 5.] Voir \filename{rect.ml}.
 
-\item[Question 6.] Voir \filename{part1.ml}.
+\item[Question 6.] Voir \filename{rect.ml}.
 \end{description}
 
 \section{La structure de données QuadTree}
 
 \begin{description}
-\item[Question 7.] Pour stocker une collection de points, on pourrait utiliser trois grandes familles de structures de données :
+\item[Question 7.] Pour stocker une collection de points, on pourrait utiliser quatre grandes familles de structures de données :
 \begin{description}
 \item[Ensembles ou listes] On stocke les coordonnées des points les uns à la suite des autres dans une liste.\\
 %Occupation mémoire très faible, mais algorithme de recherche peu efficace (parcours de la liste - $\mathcal{O}(n)$).\\
 Occupation mémoire : faible ($n \times taille(n)$).\\
 Algorithmes d'accès : très peu efficaces (parcours de la liste - $\mathcal{O}(n)$).
+\item[Dictionnaires] TODO\\
+Occupation mémoire : Modérée (on considère que pour éviter la plupart des collisions sur la fonction de hachage, il est nécessaire de d'utiliser un ensemble environ 5 fois plus grand que le nombre d'éléments à stocker).\\
+Algorithmes d'accès : très efficace lorsque l'on connaît les coordonnées exactes du point (temps constant), peu efficaces dans les autres cas (recherche de tous les points contenus dans une sous-partie de l'espace initial par exemple) puisqu'il est nécessaire de parcourir tout le dictionnaire ($\mathcal{O}(n)$).
 \item[Matrices] On stocke un tableau à deux dimensions en mémoire, et aux coordonnées du point dans la matrice on stocke l'objet lié au point.\\
 Occupation mémoire : très importante ($((Abs_{max} - Abs_{min}) \times (Ord_{max} - Ord_{min})) \times taille(n)$).\\
 Algorithmes d'accès : très efficaces (temps constant qui ne dépend pas de $n$).
-\item[Arbres n-aires] Les arbres permettent de combiner une utilisation mémoire modérée et une recherche efficace. L'emploi du QuadTree, arbre 4-aire, est particulèrement justifié pour travailler avec des points 2D, puisqu'il découpe si nécessaire l'espace en rectangles successifs et que tout point est logiquement contenu dans un rectangle.\\
+\item[Arbres n-aires] Les arbres permettent de combiner une utilisation mémoire modérée et une recherche efficace. L'emploi du QuadTree, arbre 4-aire, est particulèrement justifié pour travailler avec des points 2D, puisqu'il découpe si nécessaire l'espace en rectangles successifs et que tout point est logiquement contenu dans un rectangle. Ainsi, la recherche de tous les points contenus dans une sous-partie de l'espace initial est très rapide.\\
 Occupation mémoire : modérée ($\leq 4 \times taille(n)$).\\
 Algorithmes d'accès : plutôt efficaces ($\mathcal{O}(\log{}n)$).
 \end{description}
-\item[Question 8.] Voir \filename{part2.ml}.
-\item[Question 9.] Voir \filename{part2.ml}.
-\item[Question 10.] Voir \filename{part2.ml}.
-\item[Question 11.] Voir \filename{part2.ml}.
-\item[Question 12.] Voir \filename{part2.ml}.
-\item[Question 13.] Voir \filename{part2.ml}.
+\item[Question 8.] Voir \filename{quadtree.ml}.
+\item[Question 9.] Voir \filename{quadtree.ml}.
+\item[Question 10.] Voir \filename{quadtree.ml}.
+\item[Question 11.] Voir \filename{quadtree.ml}.
+\item[Question 12.] Voir \filename{quadtree.ml}.
+\item[Question 13.] Voir \filename{quadtree.ml}.
 \end{description}
 
 \section{Représentation graphique d'un QuadTree et tests}
@@ -118,10 +136,11 @@ Algorithmes d'accès : plutôt efficaces ($\mathcal{O}(\log{}n)$).
 \end{itemize}
 \item[\functionname{wait_and_quit}] Attend un appui sur une touche du clavier puis ferme la fenêtre de dessin.
 \item[\functionname{init}] Initialise un environnement de dessin en fonction de la taille du rectangle passé en paramètre et ouvre la fenêtre. Retourne un triplet de \code{Float} nommé \code{dparams} dans le reste du projet et utilisé par toutes les fonctions de dessin. 
-\item[\functionname{simple_test}] Appelle la fonction \functionname{draw_quadtree} à l'aide du triple \code{dparams} (obtenu par un précédent appel à la fonction \functionname{init}) et d'une fonction de conversion vers le type \code{String} pour dessiner le QuadTree passé en paramètre.
+\item[\functionname{simple_test}] Appelle la fonction \functionname{draw_quadtree} à l'aide du triplet \code{dparams} (obtenu par un précédent appel à la fonction \functionname{init}) et d'une fonction de conversion vers le type \code{String} pour dessiner le QuadTree passé en paramètre.
 \end{description}
 
-\item[Question 15.] TODO
+\item[Question 15.] Voir \filename{part3.ml}.
+
 
 \item[Question 16.] TODO
 \end{description}

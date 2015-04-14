@@ -1,40 +1,33 @@
 #use "part3.ml"
 #use "simulation1.ml"
 
-let collision_disk_point =
-  fun ((c: coord), (r: float)) ->
-  fun (p: coord) ->
+let collision_disk_point = fun ((c: coord), (r: float)) (p: coord) ->
   ((fst p) -. (fst c)) ** 2. +. ((snd p) -. (snd c)) ** 2. <= r ** 2.
 ;;
 
 
 (* Question 18 *)
 
-let rec clip =
-  fun q ->
-  fun r ->
-  match q with
-  | Q(rq, cq) ->
-     if not (rect_intersect rq r)
-     then Q(rq, Empty)
-     else match cq with
-	  | Empty -> q
-	  | Leaf (c', e) ->
-	     if rect_mem r c' then q else Q(rq, Empty)
-	  | Node(nw, ne, se, sw) ->
-	     clean_qt (Q(r, Node(
-				clip nw rq,
-				clip ne rq,
-				clip se rq,
-				clip sw rq)))
+let rec clip = fun q r ->
+  let Q(rq, cq) = q in
+  if not (rect_intersect rq r)
+  then Q(rq, Empty)
+  else match cq with
+       | Empty -> q
+       | Leaf (c', e) ->
+	  if rect_mem r c' then q else Q(rq, Empty)
+       | Node(nw, ne, se, sw) ->
+	  clean_qt (Q(r, Node(
+			     clip nw rq,
+			     clip ne rq,
+			     clip se rq,
+			     clip sw rq)))
 ;;
 
 
 (* Question 19 *)
   
-let rec collision_disk =
-  fun q ->
-  fun ((c: coord), (r: float)) ->
+let rec collision_disk = fun q ((c: coord), (r: float)) ->
   match q with
   | Q(qr, qc) ->
      match qc with

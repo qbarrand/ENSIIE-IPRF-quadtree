@@ -10,14 +10,14 @@ let c0 = 0.3, 0.3 ;;
 let c1 = 0.7, 0.7 ;;
 let c2 = 1.2, 1.2 ;;
 let c3 = 1.6, 1.6 ;;
-    
+
 let q0 = Q(r0, Leaf(c0, "obj0")) ;;
+
+let id = fun str -> str ;;
 
 let q1 = insert q0 c1 "obj1" ;;
 let q2 = insert q1 c2 "obj2" ;;
 let q3 = insert q2 c3 "obj3" ;;
-
-let id = fun str -> str ;;
 
 simple_test q0 id ;;
 simple_test q1 id ;;

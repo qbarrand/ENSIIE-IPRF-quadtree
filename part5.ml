@@ -2,11 +2,7 @@
 
 (* Question 21 *)
 
-let collision_trail_point =
-  fun (p: coord) ->
-  fun (q: coord) ->
-  fun (r: float) ->
-  fun (m: coord) ->
+let collision_trail_point = fun (p: coord) (q: coord) (r: float) (m: coord) ->
   collision_disk_point (p, r) m ||
     collision_disk_point (q, r) m ||
       let d = (abs_float
@@ -21,29 +17,24 @@ let collision_trail_point =
 ;;
 
 
-  (* Question 22 *)
+(* Question 22 *)
 
-let rec collision_trail =
-  fun q ->
-  fun (cs: coord) ->
-  fun (cd: coord) ->
-  fun (r: float) ->
-  match q with Q(r', c) ->
-    match c with
-    | Empty -> []
-    | Leaf(c', o) ->
-       if collision_trail_point cs cd r c'
-       then [(c', o)]
-       else []
-    | Node(q1, q2, q3, q4) ->
-       (collision_trail q1 cs cd r)@
-	 (collision_trail q2 cs cd r)@
-	   (collision_trail q3 cs cd r)@
-	     (collision_trail q4 cs cd r)
+let rec collision_trail = fun q (cs: coord) (cd: coord) (r: float) ->
+  let Q(r', c) = q in
+  match c with
+  | Empty -> []
+  | Leaf(c', o) ->
+     if collision_trail_point cs cd r c'
+     then [(c', o)]
+     else []
+  | Node(q1, q2, q3, q4) ->
+     (collision_trail q1 cs cd r)@
+       (collision_trail q2 cs cd r)@
+	 (collision_trail q3 cs cd r)@
+	   (collision_trail q4 cs cd r)
 ;;
-	 
-       
-  (* Question 23 *)
+  
+(* Question 23 *)
 
 #use "display.ml"
 #use "simulation2.ml"
