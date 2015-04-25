@@ -4,39 +4,50 @@
 
 (* Question 15 *)
 
-let rec gen_objects_list =
-  fun (r: rect) ->
-  fun n ->
-  fun calls ->
+(* Generates n objects with random coordinates within the QuadTree's 
+ * rect boundaries.
+ *)
+let rec gen_objects_list = fun (r: rect) n calls ->
   if calls < n
-  then match r with R(c1, c2) ->
-		    let x = (Random.float (fst c2)) +. fst c1 in
-		    let y = (Random.float (snd c1)) +. snd c2 in
-		    ((x, y), Printf.sprintf "(%.2f, %.2f)" x y)::
-		      gen_objects_list r n (calls + 1)
+  then let R(c1, c2) = r in
+       let x = (Random.float (fst c2)) +. fst c1 in
+       let y = (Random.float (snd c1)) +. snd c2 in
+       ((x, y), Printf.sprintf "(%.2f, %.2f)" x y)::
+	 gen_objects_list r n (calls + 1)
   else []
 ;;
 
-  
-let remove_objects_from_list =
-  fun q ->
-  fun l ->
+
+(* Generates a random QuadTree using r's boundaries and containing n 
+ * objects.
+ *)
+let gen_random_quadtree = fun r n ->
+  let list = gen_objects_list r n 0 in
+  quadtree_of_list list r
+;;
+
+
+(* Remove all objects contained into l from the q QuadTree.
+ *)
+let remove_objects_from_list = fun q l ->
   let remove_object =
     fun q item ->
-    match item with c, _ ->
-      remove q c
+    let c, _ = item in
+    remove q c
   in 
   List.fold_left remove_object q l
 ;;
-  
 
-let new_simple_test =
-  fun (c1: coord) ->
-  fun (c2: coord) ->
-  fun n ->
+  
+(* New simple_test : with two coordinates c1 and c2 and an int n,
+ * creates a QuadTree, then inserts n random objects, then displays it,
+ * then removes all previous inserted objects, then displays it again.
+ *)
+let new_simple_test = fun (c1: coord) (c2: coord) n ->
   let r = make_rect c1 c2 in
-  let list = gen_objects_list r n 0 in
+  (*  let list = gen_objects_list r n 0 in *)
   let qf = gen_random_quadtree r n in
+  let list = list_of_quadtree qf in
   (* Display full QuadTree *)
   let _ = simple_test qf (fun str -> str) in
   let qe = remove_objects_from_list qf list in

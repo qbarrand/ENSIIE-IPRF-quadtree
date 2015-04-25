@@ -71,9 +71,11 @@ Le projet est organisé comme suit :
  .2 part3.ml\DTcomment{Partie 3}.
  .2 part3.test.ml\DTcomment{Partie 3 - tests}.
  .2 part4.ml\DTcomment{Partie 4}.
+ .2 part4.test.ml\DTcomment{Partie 4 - tests}.
  .2 part5.ml\DTcomment{Partie 5}.
  .2 quadtree.ml\DTcomment{Partie 2}.
  .2 rect.ml\DTcomment{Partie 1}.
+ .2 report.tex\DTcomment{Le présent rapport}.
  .2 simulation1.ml\DTcomment{Fourni par le sujet}.
  .2 simulation1.ml\DTcomment{Fourni par le sujet}.
 }
@@ -101,25 +103,30 @@ Le projet est organisé comme suit :
 \item[Question 7.] Pour stocker une collection de points, on pourrait utiliser quatre grandes familles de structures de données :
 \begin{description}
 \item[Ensembles ou listes] On stocke les coordonnées des points les uns à la suite des autres dans une liste.\\
-%Occupation mémoire très faible, mais algorithme de recherche peu efficace (parcours de la liste - $\mathcal{O}(n)$).\\
 Occupation mémoire : faible ($n \times taille(n)$).\\
 Algorithmes d'accès : très peu efficaces (parcours de la liste - $\mathcal{O}(n)$).
-\item[Dictionnaires] TODO\\
-Occupation mémoire : Modérée (on considère que pour éviter la plupart des collisions sur la fonction de hachage, il est nécessaire de d'utiliser un ensemble environ 5 fois plus grand que le nombre d'éléments à stocker).\\
-Algorithmes d'accès : très efficace lorsque l'on connaît les coordonnées exactes du point (temps constant), peu efficaces dans les autres cas (recherche de tous les points contenus dans une sous-partie de l'espace initial par exemple) puisqu'il est nécessaire de parcourir tout le dictionnaire ($\mathcal{O}(n)$).
-\item[Matrices] On stocke un tableau à deux dimensions en mémoire, et aux coordonnées du point dans la matrice on stocke l'objet lié au point.\\
-Occupation mémoire : très importante ($((Abs_{max} - Abs_{min}) \times (Ord_{max} - Ord_{min})) \times taille(n)$).\\
-Algorithmes d'accès : très efficaces (temps constant qui ne dépend pas de $n$).
+\item[Dictionnaires] On stocke les points dans un dictionnaire dont les clés sont les coordonnées des points.\\
+Occupation mémoire : Modérée (on considère que pour éviter la plupart des collisions sur la fonction de hachage, il est nécessaire de d'utiliser un ensemble environ 5 fois plus grand que le nombre d'éléments à stocker -- $5 \times n \times taille(n)$).\\
+Algorithmes d'accès : très efficace lorsque l'on connaît les coordonnées exactes du point (temps quasi-constant), peu efficaces dans les autres cas (recherche de tous les points contenus dans une sous-partie de l'espace initial par exemple) puisqu'il est nécessaire de parcourir tout le dictionnaire ($\mathcal{O}(n)$).
+\item[Matrices] On stocke un tableau à deux dimensions en mémoire, et aux coordonnées du point dans la matrice on stocke l'objet lié au point. Toutefois, cette structure de données peut se révéler inadaptée aux stockage de points aux coordonnées représentées par des nombres flottants, en raison de la façon dont ils sont représentés en mémoire.\\
+Occupation mémoire : très importante (de l'ordre de $((Abs_{max} - Abs_{min}) \times (Ord_{max} - Ord_{min})) \times taille(n)$).\\
+Algorithmes d'accès : très efficaces (temps quasi-constant).
 \item[Arbres n-aires] Les arbres permettent de combiner une utilisation mémoire modérée et une recherche efficace. L'emploi du QuadTree, arbre 4-aire, est particulèrement justifié pour travailler avec des points 2D, puisqu'il découpe si nécessaire l'espace en rectangles successifs et que tout point est logiquement contenu dans un rectangle. Ainsi, la recherche de tous les points contenus dans une sous-partie de l'espace initial est très rapide.\\
-Occupation mémoire : modérée ($\leq 4 \times taille(n)$).\\
+Occupation mémoire : modérée ($\leq 4 \times n \times taille(n)$).\\
 Algorithmes d'accès : plutôt efficaces ($\mathcal{O}(\log{}n)$).
 \end{description}
 \item[Question 8.] Voir \filename{quadtree.ml}.
+
 \item[Question 9.] Voir \filename{quadtree.ml}.
+
 \item[Question 10.] Voir \filename{quadtree.ml}.
+
 \item[Question 11.] Voir \filename{quadtree.ml}.
+
 \item[Question 12.] Voir \filename{quadtree.ml}.
-\item[Question 13.] Voir \filename{quadtree.ml}.
+
+\item[Question 13.] Voir \filename{quadtree.ml}.\\
+J'ai choisi d'écrire une fonction \functionname{clean_qt} qui devrait permettre d'avoir une simplification bien plus performante du QuadTree que si l'on utilisait \functionname{list_of_quadtree} et \functionname{quadtree_of_list} (on évite l'opération en $\mathcal{O}(\log{}n)$ qui consiste à reconstruire le carré après avoir supprimé un objet dans la liste). Malgré de nombreux tests, je n'ai pas trouvé de cas dans lesquels cette fonction produirait des résultats inattendus.
 \end{description}
 
 \section{Représentation graphique d'un QuadTree et tests}
@@ -140,7 +147,6 @@ Algorithmes d'accès : plutôt efficaces ($\mathcal{O}(\log{}n)$).
 \end{description}
 
 \item[Question 15.] Voir \filename{part3.ml}.
-
 
 \item[Question 16.] TODO
 \end{description}
@@ -181,4 +187,9 @@ Algorithmes d'accès : plutôt efficaces ($\mathcal{O}(\log{}n)$).
 \item[\functionname{simulation_move}] Idem que \functionname{simulation_placement} de \filename{simulation1.ml}, sauf qu'après avoir défini un cercle, un second clic de souris utilise la fonction \functionname{draw_trail_with_collisions} pour déplacer le cercle vers cette seconde position et afficher en rouge les points survolés pendant son déplacement.
 \end{description}
 \end{description}
+
+\break
+
+\section*{Bonus}
+
 \end{document}
