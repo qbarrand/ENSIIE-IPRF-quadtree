@@ -100,7 +100,11 @@ let rec insert = fun q c add_obj ->
 (* Question 12 *)
   
 let quadtree_of_list = fun l r ->
-  List.fold_left (fun q item -> match item with c, obj -> insert q c obj) (Q(r, Empty)) l
+  let insert_function = fun q item ->
+    let c, obj = item in
+    insert q c obj
+  in
+  List.fold_left insert_function (Q(r, Empty)) l
 ;;
 
 
@@ -146,3 +150,18 @@ let rec remove = fun q c ->
 			(remove sw c))))
 ;;
   
+
+(* Alternative, less efficient remove function *)
+
+let rec list_remove = fun q c ->
+  let Q(r, _) = q in
+  let l = list_of_quadtree q in
+  let check_function = fun l item ->
+    let item_coord, _ = item in
+    if coord_equals item_coord c
+    then l
+    else item::l
+  in
+  let l' = List.fold_left check_function [] l in
+  quadtree_of_list l' r
+;;

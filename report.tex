@@ -55,15 +55,16 @@
 \maketitle
 
 \begin{abstract}
-Résumé
+Ce document a été réalisé dans le cadre du projet final du module IPRF \mbox{« Programmation fonctionnelle »} de la formation FIPA de l'ENSIIE.\\
+Dans ce projet, nous étudions l'opportunité d'utiliser une structure de données de type arbre 4-aire (« QuadTree ») pour stocker des points. Nous voyons
 \end{abstract}
 
 \break
 
 \section*{Organisation du projet}
-
-TODO
-Le projet est organisé comme suit :
+Pour chaque section, j'ai décidé de placer les fonctions à écrire dans les fichiers \filename{partX.ml} et le code interactif (tel que les tests graphiques) dans les fichiers \filename{partX.test.ml}. Cette organisation permet d'importer le code des sections précédentes à l'aide de directives \mintinline{ocaml}{#use} sans provoquer d'appels de fonction innattendus.
+\\
+Le rendu est donc constitué des fichiers suivants :
 \dirtree{%
  .1 /.
  .2 coord.ml\DTcomment{Partie 1}.
@@ -107,13 +108,13 @@ Occupation mémoire : faible ($n \times taille(n)$).\\
 Algorithmes d'accès : très peu efficaces (parcours de la liste - $\mathcal{O}(n)$).
 \item[Dictionnaires] On stocke les points dans un dictionnaire dont les clés sont les coordonnées des points.\\
 Occupation mémoire : Modérée (on considère que pour éviter la plupart des collisions sur la fonction de hachage, il est nécessaire de d'utiliser un ensemble environ 5 fois plus grand que le nombre d'éléments à stocker -- $5 \times n \times taille(n)$).\\
-Algorithmes d'accès : très efficace lorsque l'on connaît les coordonnées exactes du point (temps quasi-constant), peu efficaces dans les autres cas (recherche de tous les points contenus dans une sous-partie de l'espace initial par exemple) puisqu'il est nécessaire de parcourir tout le dictionnaire ($\mathcal{O}(n)$).
+Algorithmes d'accès : très efficace lorsque l'on connaît les coordonnées exactes du point (temps quasi-constant), peu efficaces dans les autres cas (recherche de tous les points contenus dans une restriction de l'espace initial par exemple) puisqu'il est nécessaire de parcourir tout le dictionnaire ($\mathcal{O}(n)$).
 \item[Matrices] On stocke un tableau à deux dimensions en mémoire, et aux coordonnées du point dans la matrice on stocke l'objet lié au point. Toutefois, cette structure de données peut se révéler inadaptée aux stockage de points aux coordonnées représentées par des nombres flottants, en raison de la façon dont ils sont représentés en mémoire.\\
 Occupation mémoire : très importante (de l'ordre de $((Abs_{max} - Abs_{min}) \times (Ord_{max} - Ord_{min})) \times taille(n)$).\\
-Algorithmes d'accès : très efficaces (temps quasi-constant).
-\item[Arbres n-aires] Les arbres permettent de combiner une utilisation mémoire modérée et une recherche efficace. L'emploi du QuadTree, arbre 4-aire, est particulèrement justifié pour travailler avec des points 2D, puisqu'il découpe si nécessaire l'espace en rectangles successifs et que tout point est logiquement contenu dans un rectangle. Ainsi, la recherche de tous les points contenus dans une sous-partie de l'espace initial est très rapide.\\
+Algorithmes d'accès : très efficaces (temps quasi-constant qui dépend seulement du nombre d'éléments possédant la même clé).
+\item[Arbres n-aires] Les arbres permettent de combiner une utilisation mémoire modérée et une recherche efficace. L'emploi du QuadTree, arbre 4-aire, est particulèrement justifié pour travailler avec des points 2D, puisqu'il découpe si nécessaire l'espace en rectangles successifs et que tout point est logiquement contenu dans un rectangle. Ainsi, la recherche de tous les points contenus dans une restriction de l'espace initial est très rapide.\\
 Occupation mémoire : modérée ($\leq 4 \times n \times taille(n)$).\\
-Algorithmes d'accès : plutôt efficaces ($\mathcal{O}(\log{}n)$).
+Algorithmes d'accès : efficaces ($\mathcal{O}(\log{}n)$).
 \end{description}
 \item[Question 8.] Voir \filename{quadtree.ml}.
 
@@ -126,7 +127,8 @@ Algorithmes d'accès : plutôt efficaces ($\mathcal{O}(\log{}n)$).
 \item[Question 12.] Voir \filename{quadtree.ml}.
 
 \item[Question 13.] Voir \filename{quadtree.ml}.\\
-J'ai choisi d'écrire une fonction \functionname{clean_qt} qui devrait permettre d'avoir une simplification bien plus performante du QuadTree que si l'on utilisait \functionname{list_of_quadtree} et \functionname{quadtree_of_list} (on évite l'opération en $\mathcal{O}(\log{}n)$ qui consiste à reconstruire le carré après avoir supprimé un objet dans la liste). Malgré de nombreux tests, je n'ai pas trouvé de cas dans lesquels cette fonction produirait des résultats inattendus.
+Intuitivement, on pourrait être tenté d'utiliser \functionname{list_of_quadtree}, puis de supprimer l'élément choisi dans la liste, puis de faire de nouveau appel à \functionname{quadtree_of_list}; la fonction \functionname{list_remove} implémente cette méthode.\\
+Pour éviter l'opération en $\mathcal{O}(\log{}n)$ qui consiste à reconstruire le carré après avoir supprimé un objet dans la liste, j'ai choisi d'écrire une fonction \functionname{clean_qt} qui devrait permettre d'avoir une simplification plus performante du QuadTree que si l'on utilisait la méthode décrite plus haut. Malgré de nombreux tests, je n'ai pas trouvé de cas dans lesquels cette fonction produirait des résultats inattendus.
 \end{description}
 
 \section{Représentation graphique d'un QuadTree et tests}
