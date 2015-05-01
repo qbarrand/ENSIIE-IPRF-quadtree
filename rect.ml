@@ -73,3 +73,11 @@ let rect_split = fun r ->
   make_rect (rect_left r, rect_bottom r) p,
   make_rect p (rect_right r, rect_bottom r)
 ;;
+
+
+(* Other functions *)
+
+let rect_tostring = fun r ->
+  let R(c1, c2) = r in
+  Printf.sprintf "Rect(%s, %s)" (coord_tostring c1) (coord_tostring c2)
+;;

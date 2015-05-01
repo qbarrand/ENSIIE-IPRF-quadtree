@@ -5,5 +5,5 @@ let coord_equals = fun (c1: coord) (c2: coord) ->
 ;;
 
 let coord_tostring = fun (c: coord) ->
-  Printf.printf "Point(%f, %f)\n" (fst c) (snd c)
+  Printf.sprintf "Point(%.2f, %.2f)" (fst c) (snd c)
 ;;
