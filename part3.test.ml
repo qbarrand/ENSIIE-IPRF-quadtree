@@ -42,5 +42,5 @@ simple_test q7 id ;;
  * Question 15
  *)
 
-new_simple_test (0., 0.) (100., 100.) 35 ;;
+new_simple_test (0., 0.) (100., 100.) 100 ;;
 
