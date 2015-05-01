@@ -1,5 +1,5 @@
 #use "rect.ml"
-
+     
 type 'a quadtree =
   | Q of rect * 'a cell
  and 'a cell =
@@ -24,10 +24,7 @@ let rec cardinal = fun q ->
   | Empty -> 0
   | Leaf _ -> 1
   | Node (nw, ne, se, sw) ->
-     cardinal nw +
-       cardinal ne +
-       cardinal se +
-       cardinal sw
+     cardinal nw + cardinal ne + cardinal se + cardinal sw
 ;;
 
 
