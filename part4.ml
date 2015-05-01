@@ -9,18 +9,16 @@ let collision_disk_point = fun ((c: coord), (r: float)) (p: coord) ->
 
 let rec clip = fun q r ->
   let Q(rq, cq) = q in
-  if not (rect_intersect rq r)
+  if not (rect_intersect r rq)
   then Q(rq, Empty)
   else match cq with
        | Empty -> q
-       | Leaf (c', e) ->
-	  if rect_mem r c' then q else Q(rq, Empty)
+       | Leaf (c', _) -> if rect_mem r c'
+			 then q
+			 else Q(rq, Empty)
        | Node(nw, ne, se, sw) ->
-	  clean_qt (Q(r, Node(
-			     clip nw rq,
-			     clip ne rq,
-			     clip se rq,
-			     clip sw rq)))
+	  clean_qt (
+	      Q(r, Node(clip nw r, clip ne r, clip se r, clip sw r)))
 ;;
 
 
@@ -38,8 +36,8 @@ let rec collision_disk = fun q ((c: coord), (r: float)) ->
      then [(c', o)]
      else []
   | Node(q1, q2, q3, q4) ->
-     (collision_disk q1 (c, r))@
-       (collision_disk q2 (c, r))@
-	 (collision_disk q3 (c, r))@
-	   (collision_disk q4 (c, r))
+    (collision_disk q1 (c, r))
+    @(collision_disk q2 (c, r))
+    @(collision_disk q3 (c, r))
+    @(collision_disk q4 (c, r))
 ;;

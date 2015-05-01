@@ -45,20 +45,26 @@ let rect_height = fun r ->
 (* Question 4 *)
 
 let rect_mem = fun r a ->
-  fst a >= rect_left r &&
-    fst a <= rect_right r &&
-      snd a <= rect_top r &&
-	snd a >= rect_bottom r
+  fst a >= rect_left r
+  && fst a <= rect_right r
+  && snd a <= rect_top r
+  && snd a >= rect_bottom r
 ;;
 
 
 (* Question 5 *)
 
 let rect_intersect = fun r1 r2 ->
-  rect_mem r1 (rect_left r2, rect_top r2) ||
-    rect_mem r1 (rect_left r2, rect_bottom r2) ||
-      rect_mem r1 (rect_right r2, rect_top r2) ||
-	rect_mem r1 (rect_right r2, rect_bottom r2)
+  (* Any point of r2 into r1 ? *)
+  rect_mem r1 (rect_left r2, rect_top r2)
+  || rect_mem r1 (rect_left r2, rect_bottom r2)
+  || rect_mem r1 (rect_right r2, rect_top r2)
+  || rect_mem r1 (rect_right r2, rect_bottom r2)
+  (* Any point of r1 into r2 ? *)
+  || rect_mem r2 (rect_left r1, rect_top r1)
+  || rect_mem r2 (rect_left r1, rect_bottom r1)
+  || rect_mem r2 (rect_right r1, rect_top r1)
+  || rect_mem r2 (rect_right r1, rect_bottom r1)
 ;;
 
 
