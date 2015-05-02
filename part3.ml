@@ -59,13 +59,13 @@ let new_simple_test = fun (c1: coord) (c2: coord) n ->
 
 (* Question 16 *)
 
-let rec draw_quadtree = fun dparams data_to_string qt ->
+let rec bad_draw_quadtree = fun dparams data_to_string qt ->
   let sx,sy,z = dparams in
   let Q (r, qc) = qt in
   let x1 = int_of_float (sx +. z *. rect_left r) in
+  let x2 = x1 + int_of_float (rect_length r) in
   let y1 = int_of_float (sy +. z *. rect_bottom r) in
-  let x2 = int_of_float (sx +. z *. rect_right r) in
-  let y2 = int_of_float (sy +. z *. rect_top r) in
+  let y2 = y1 + int_of_float (rect_height r) in
   let _ = Graphics.set_color Graphics.blue in
   let _ = Graphics.draw_rect x1 y1 (x2-x1) (y2-y1) in
   let _ = Graphics.set_color Graphics.black in
@@ -73,9 +73,17 @@ let rec draw_quadtree = fun dparams data_to_string qt ->
     | Empty -> ()
     | Leaf (c,d) -> draw_data dparams data_to_string (c,d) Graphics.black
     | Node (nw,ne,se,sw) ->
-       let _ = draw_quadtree dparams data_to_string nw in
-       let _ = draw_quadtree dparams data_to_string ne in
-       let _ = draw_quadtree dparams data_to_string se in
-       let _ = draw_quadtree dparams data_to_string sw in
+       let _ = bad_draw_quadtree dparams data_to_string nw in
+       let _ = bad_draw_quadtree dparams data_to_string ne in
+       let _ = bad_draw_quadtree dparams data_to_string se in
+       let _ = bad_draw_quadtree dparams data_to_string sw in
        ()
 ;;
+
+let bad_simple_test = fun qt f ->
+    let r = boundary qt in
+    let dparams = init r in
+    let _ = bad_draw_quadtree dparams f qt in
+    wait_and_quit ()
+;;
+
