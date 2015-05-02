@@ -37,21 +37,15 @@ let rec collision_trail = fun q (cs: coord) (cd: coord) (r: float) ->
      @(collision_trail q4 cs cd r)
 ;;
   
-(* Question 23 *)
 
-#use "display.ml"
+(* Question 23 bonus *)
+
 #use "simulation1.ml"
 #use "simulation2.ml"
-  
-let q = gen_random_quadtree (make_rect (0., 0.) (30., 30.)) 30 ;;
-simulation_move q (fun str -> str) ;; 
-
-(* Bonus *)
   
 let rec get_new_destination = fun dparams disk qt f ->
   let (xd,yd) = get_point dparams in
   let r = snd disk in
-  let _ = Graphics.clear_graph () in
   let _ = draw_disk dparams disk Graphics.green false in
   let _ = draw_quadtree dparams f qt in
   let b1 = draw_trail_with_collisions dparams f qt disk (xd,yd) in
@@ -71,6 +65,3 @@ let new_simulation_move = fun qt f ->
   then get_new_destination dparams disk qt f
   else wait_and_quit ()
 ;;
-
-let q = gen_random_quadtree (make_rect (0., 0.) (30., 30.)) 30 ;;
-new_simulation_move q (fun str -> str) ;; 
