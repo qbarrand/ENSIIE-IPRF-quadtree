@@ -52,8 +52,7 @@ let new_simple_test = fun (c1: coord) (c2: coord) n ->
   let _ = simple_test qf (fun str -> str) in
   let qe = remove_objects_from_list qf list in
   (* Display empty QuadTree *)
-  let _ = simple_test qe (fun str -> str) in
-  ()
+  simple_test qe (fun str -> str)
 ;;
 
 
