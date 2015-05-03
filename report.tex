@@ -44,7 +44,7 @@
 \fancyhead[RE,LO]{ENSIIE \\ IPRF - « QuadTree »}
 \fancyfoot[LE,CO]{\thepage}
 
- \areaset[5mm]{412pt}{657pt}
+\areaset[5mm]{412pt}{657pt}
 
 \begin{document}
 
@@ -60,10 +60,17 @@
 
 \begin{abstract}
 Ce document a été réalisé dans le cadre du projet final du module IPRF \mbox{« Programmation fonctionnelle »} de la formation FIPA de l'ENSIIE.\\
-Dans ce projet, nous étudions l'opportunité d'utiliser une structure de données de type arbre 4-aire (« QuadTree ») pour stocker des points appartenant à un repère orthonormé; le but de détecter des collisions entre un disque en déplacement et des obstacles matérialisés par ces points.\\
+Dans ce projet, nous étudions l'opportunité d'utiliser une structure de données de type arbre 4-aire (« QuadTree ») pour stocker des points appartenant à un repère orthonormé; le but est de détecter des collisions entre un disque en déplacement et des obstacles matérialisés par ces points.\\
 Le QuadTree étudié dans ce projet n'est pas extensible (les bornes du plan donné à l'initialisation sont fixes et positives) et possède une taille de panier égale à 1, ce qui signifie qu'un seul objet peut être stocké par nœud terminal.\\
 Ce projet est l'occasion d'étudier plusieurs stratégies de stockage d'objets en mémoire et d'approfondir l'utilisation de la bibliothèque standard d'OCaml pour des usages graphiques.
 \end{abstract}
+
+\vspace{11mm}
+
+\begin{figure}[h]
+	\centering
+	\fbox{\includegraphics[scale=0.55]{q23.png}}
+\end{figure}
 
 \break
 
@@ -114,13 +121,13 @@ Le rendu est donc constitué des fichiers suivants :
 \begin{description}
 \item[Question 7.] Pour stocker une collection de points, on pourrait utiliser quatre grandes familles de structures de données :
 \begin{description}
-\item[Ensembles ou listes] On stocke les coordonnées des points les uns à la suite des autres dans une liste.\\
+\item[Ensembles ou listes] On stocke les points les uns à la suite des autres dans une liste.\\
 Occupation mémoire : minimale ($n \times taille(n)$).\\
 Algorithmes d'accès : très peu efficaces (parcours de la liste - $\mathcal{O}(n)$).
 \item[Dictionnaires] On stocke les points dans un dictionnaire dont les clés sont les coordonnées des points.\\
-Occupation mémoire : Modérée (on considère que pour éviter la plupart des collisions sur la fonction de hachage, il est nécessaire de d'utiliser un ensemble environ 5 fois plus grand que le nombre d'éléments à stocker -- $5 \times n \times taille(n)$).\\
+Occupation mémoire : modérée (on considère que pour éviter la plupart des collisions sur la fonction de hachage, il est nécessaire de d'utiliser un ensemble environ 5 fois plus grand que le nombre d'éléments à stocker -- $5 \times n \times taille(n)$).\\
 Algorithmes d'accès : très efficaces lorsque l'on connaît les coordonnées exactes du point (temps quasi-constant qui dépend de la fonction de hachage choisie et du nombre d'éléments possédant la même clé), peu efficaces dans les autres cas (recherche de tous les points contenus dans une restriction du plan initial par exemple) puisqu'il est nécessaire de parcourir tout le dictionnaire ($\mathcal{O}(n)$).
-\item[Matrices] On stocke un tableau à deux dimensions en mémoire, et aux coordonnées du point dans la matrice on stocke l'objet lié au point.\\
+\item[Matrices] On stocke un tableau à deux dimensions en mémoire, et on stocke le point à ses coordonnées dans le tableau.\\
 %Toutefois, cette structure de données peut se révéler inadaptée aux stockage de points aux coordonnées représentées par des nombres flottants, en raison de la façon dont ils sont représentés en mémoire.\\
 Occupation mémoire : très importante (de l'ordre de $((Abs_{max} - Abs_{min}) \times (Ord_{max} - Ord_{min})) \times taille(n)$).\\
 Algorithmes d'accès : très efficaces (temps quasi-constant qui dépend seulement du nombre d'éléments possédant la même clé).
@@ -139,7 +146,7 @@ Algorithmes d'accès : efficaces ($\mathcal{O}(\log{}n)$).
 \item[Question 12.] Voir \filename{quadtree.ml}.
 
 \item[Question 13.] Voir \filename{quadtree.ml}.\\
-Intuitivement, on pourrait être tenté d'utiliser \funname{list_of_quadtree}, puis de supprimer l'élément choisi dans la liste, puis de faire de nouveau appel à \funname{quadtree_of_list}; la fonction \funname{list_remove} implémente cette méthode.\\
+Intuitivement, on pourrait être tenté d'utiliser \funname{list_of_quadtree}, puis de supprimer l'élément choisi dans la liste, puis de faire appel à \funname{quadtree_of_list} pour reconstruire un QuadTree à partir de cette nouvelle liste; la fonction \funname{list_remove} implémente cette méthode.\\
 Pour éviter l'opération en $\mathcal{O}(n)$ qui consiste à reconstruire le QuadTree après avoir supprimé un objet dans la liste, on peut écrire une fonction \funname{clean_qt} qui devrait permettre d'avoir une simplification plus performante du QuadTree que si l'on utilisait la méthode décrite plus haut. Malgré de nombreux tests, nous n'avons pas trouvé de cas dans lesquels cette fonction produirait des résultats incorrects.
 \end{description}
 
@@ -165,12 +172,11 @@ La fonction \funname{new_simple_test} prend en paramètre deux coordonnées \cod
 Un appel à cette fonction avec l'insertion d'une centaine d'objets est disponible dans le fichier \filename{part3.test.ml}.
 
 \item[Question 16.] Voir \filename{part3.ml}.\\
-En utilisant \code{rect_length} et \code{rect_height}, dans la fonction \funname{bad_draw_quadtree}, on observe que certains segments délimitant les bordures du QuadTrees sont plus épais que d'autres (voir Fig.~\ref{q16goodquadtree} et \ref{q16badquadtree}). Le problème peut être lié à plusieurs conversions de nombres flottants en entiers :
+En utilisant \code{rect_length} et \code{rect_height}, dans la fonction \funname{bad_draw_quadtree}, on observe que certains segments délimitant les bordures du QuadTree sont plus épais que d'autres (voir Fig.~\ref{q16goodquadtree} et \ref{q16badquadtree}). Le problème peut être lié à plusieurs conversions de nombres flottants en entiers :
 \begin{itemize}
 	\item Lorsque l'on utilise la fonction \funname{draw_quadtree}, la conversion de nombre flottant en nombre entier a lieu une fois que le calcul sur les composantes flottantes \code{sx} / \code{sy}, \code{rect_left r} / \code{rect_right r} / \code{rect_top r} / \code{rect_bottom r} et \code{z} est terminé; on a donc un seul arrondi.
-	\item Lorsque l'on utilise la fonction \funname{bad_draw_quadtree}, on additionne le résultat arrondi en entier du calcul sur les deux composantes flottantes \code{z} et \code{rect_length r} / \code{rect_height r} à la composante entière déjà arrondie \code{x1} ou \code{x2}; on fait alors deux arrondis, qui peuvent provoquer le dessin de traits non superposés lorsque l'on dessine plusieurs fois le même QuadTree.
-Ces traits proches mais non superposés
-apparaissent dans la fenêtre graphique comme des traits plus épais.
+	\item Lorsque l'on utilise la fonction \funname{bad_draw_quadtree}, on ajoute le résultat arrondi en entier du calcul sur les deux composantes flottantes \code{z} et \code{rect_length r} / \code{rect_height r} à la composante entière déjà arrondie \code{x1} ou \code{x2}; on fait alors deux arrondis, qui peuvent provoquer le dessin de traits non superposés lorsque l'on dessine plusieurs fois le même QuadTree.
+Ces traits proches mais non superposés apparaissent dans la fenêtre graphique comme des traits plus épais.
 \end{itemize}
 
 \begin{figure}[!h]
@@ -208,7 +214,7 @@ apparaissent dans la fenêtre graphique comme des traits plus épais.
 \item de couleur jaune s'il recouvre des points du QuadTree (obtenus grâce à \funname{collision_disk} de \filename{part4.ml}), et fait appel à \funname{draw_data} de \filename{display.ml} pour dessiner ces points en rouge le cas échéant;
 \item de couleur verte sinon.
 \end{itemize}
-\item[\funname{simulation_placement}] Fait appel aux fonctions \funname{init} et \funname{draw_quadtree} de \\ \filename{display.ml} et aux fonctions \funname{get_disk} et \funname{draw_disk_with_collisions} pour dessiner un cercle défini à la souris par l'utilisateur et ses éventuels collisions avec les points du QuadTree.
+\item[\funname{simulation_placement}] Fait appel aux fonctions \funname{init} et \funname{draw_quadtree} de \\ \filename{display.ml} et aux fonctions \funname{get_disk} et \funname{draw_disk_with_collisions} pour dessiner un cercle défini à la souris par l'utilisateur et ses éventuelles collisions avec les points du QuadTree.
 \end{description}
 \end{description}
 
@@ -251,7 +257,7 @@ L'arbre 4-aire (« QuadTree ») possède des propriétés très intéressantes p
 \\
 Dans ce projet, nous avons vu un cas d'utilisation typique des QuadTrees : la détection de collisions. Les algorithmes développés plus haut sont couramment utilisés dans le monde des jeux vidéos par exemple puisqu'ils permettent de ne tester la collision de l'objet en mouvement qu'avec une partie des points du plan du plan complet, ce qui réduit considérablement les calculs.
 \\
-Il est également possible de généraliser cette structure de données pour gérer des objets en trois dimensions dans l'espace, en utilisant des arbres 8-aires (« OctTrees »).
+Il est également possible de généraliser cette structure de données pour gérer des objets en trois dimensions dans l'espace, en utilisant des arbres 8-aires (« OcTrees »).
 
 
 \end{document}
