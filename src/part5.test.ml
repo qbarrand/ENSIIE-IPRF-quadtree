@@ -8,5 +8,4 @@ simulation_move q (fun str -> str) ;;
 
 (* Question 23 bonus *)
 
-let q = gen_random_quadtree (make_rect (-30., -30.) (30., 30.)) 30 ;;
 new_simulation_move q (fun str -> str) ;;  
